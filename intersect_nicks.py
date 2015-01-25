@@ -54,7 +54,8 @@ def intersection_command(data, buffer_, args):
         for channel in channels:
             percentage = 100.0 * len(in_common) / len(nicks[channel])
             buffer.show("Percentage of %s: %.2f%%" % (channel, percentage))
-        buffer.show("People in common: %s" % ", ".join(sorted(in_common)))
+        sorted_names = sorted(in_common, key=lambda n: n.lower())
+        buffer.show("People in common: %s" % ", ".join(sorted_names))
     return w.WEECHAT_RC_OK
 
 
