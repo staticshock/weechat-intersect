@@ -3,9 +3,9 @@ import re
 import argparse
 
 NAME = "intersect_nicks"
-AUTHOR = "anton backer <olegov@gmail.com>"
-VERSION = "0.1.0"
-LICENSE = "isc"
+AUTHOR = "Anton Backer <olegov@gmail.com>"
+VERSION = "0.2.0"
+LICENSE = "ISC"
 DESCRIPTION = "Find people in common between two or more channels"
 SHUTDOWN_FUNCTION = ""
 CHARSET = ""
