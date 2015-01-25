@@ -1,4 +1,6 @@
 import weechat as w
+import re
+import argparse
 
 NAME = "intersect_nicks"
 AUTHOR = "anton backer <olegov@gmail.com>"
@@ -33,9 +35,18 @@ class BufferWrapper(object):
         w.prnt(self.buffer, str(obj))
 
 
-def intersection_command(data, buffer_, args):
+def parse_args(args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-summary", action='store_true')
+    parser.add_argument("channels", nargs='*')
+    argv = re.split(r"\s+", args.strip())
+    return parser.parse_args(argv)
+
+
+def intersection_command(data, buffer_, args_):
     buffer = BufferWrapper(buffer_)
-    channels = args.split(" ")
+    args = parse_args(args_)
+    channels = list(args.channels)
     if len(channels) == 1 and buffer.type == 'channel':
         channels.insert(0, buffer.channel)
     if len(channels) < 2:
@@ -54,14 +65,15 @@ def intersection_command(data, buffer_, args):
         for channel in channels:
             percentage = 100.0 * len(in_common) / len(nicks[channel])
             buffer.show("Percentage of %s: %.2f%%" % (channel, percentage))
-        sorted_names = sorted(in_common, key=lambda n: n.lower())
-        buffer.show("People in common: %s" % ", ".join(sorted_names))
+        if not args.summary:
+            sorted_names = sorted(in_common, key=lambda n: n.lower())
+            buffer.show("People in common: %s" % ", ".join(sorted_names))
     return w.WEECHAT_RC_OK
 
 
 w.hook_command(
     COMMAND, DESCRIPTION,
-    "<channel> [channel ...]",
+    "[-summary] <channel> [channel ...]",
     "Examples:\n"
     "  Find people in common between the current channel and #foo:\n"
     "    /" + COMMAND + " #foo\n"
